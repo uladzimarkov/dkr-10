@@ -1,0 +1,52 @@
+root@u-45755:/home/user/Docker/task10# cat Dockerfile 
+ARG NG_VERSION=stable
+FROM nginx:$NG_VERSION
+ENV NG_VERSION=$NG_VERSION
+ARG ARG_FILE
+RUN touch /opt/$ARG_FILE
+
+root@u-45755:/home/user/Docker/task10# docker build . --build-arg ARG_FILE=file.txt -t nginx:rbm-dkr-10
+Sending build context to Docker daemon  2.048kB
+Step 1/5 : ARG NG_VERSION=stable
+Step 2/5 : FROM nginx:$NG_VERSION
+ ---> d6c9558ba445
+Step 3/5 : ENV NG_VERSION=$NG_VERSION
+ ---> Running in ec818aa442b5
+Removing intermediate container ec818aa442b5
+ ---> 7398861ac602
+Step 4/5 : ARG ARG_FILE
+ ---> Running in 5a6d3d043109
+Removing intermediate container 5a6d3d043109
+ ---> d6e824c4fe86
+Step 5/5 : RUN touch /opt/$ARG_FILE
+ ---> Running in 3222d12ac4ae
+Removing intermediate container 3222d12ac4ae
+ ---> 5aeb5cc9043a
+Successfully built 5aeb5cc9043a
+Successfully tagged nginx:rbm-dkr-10
+
+root@u-45755:/home/user/Docker/task10# docker run -d --name rbm-dkr-10 -e "REBRAINME=DKR10" nginx:rbm-dkr-10
+f9d1094737c0f89afa5efbcf73eba35f9509fcbc0c2852cb8374d3e1eca9e129
+root@u-45755:/home/user/Docker/task10# docker ps -a
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS                    PORTS     NAMES
+f9d1094737c0   nginx:rbm-dkr-10    "/docker-entrypoint.…"   3 seconds ago   Up 2 seconds              80/tcp    rbm-dkr-10
+
+root@u-45755:/home/user/Docker/task10# docker exec rbm-dkr-10 env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=f9d1094737c0
+REBRAINME=DKR10
+NGINX_VERSION=1.20.2
+NJS_VERSION=0.7.0
+PKG_RELEASE=1~bullseye
+NG_VERSION=
+HOME=/root
+
+root@u-45755:/home/user/Docker/task10# docker exec -it rbm-dkr-10 bash
+
+root@f9d1094737c0:/# ls -lah /opt/
+total 8.0K
+drwxr-xr-x 1 root root 4.0K Feb  4 09:46 .
+drwxr-xr-x 1 root root 4.0K Feb  4 09:46 ..
+-rw-r--r-- 1 root root    0 Feb  4 09:46 file.txt
+
+
